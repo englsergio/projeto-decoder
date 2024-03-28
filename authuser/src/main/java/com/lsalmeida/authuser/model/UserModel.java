@@ -7,6 +7,7 @@ import com.lsalmeida.authuser.enums.UserStatus;
 import com.lsalmeida.authuser.enums.UserType;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -20,8 +21,8 @@ import java.util.UUID;
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 @Entity
 @Table(name = "TB_USERS")
-@EqualsAndHashCode(of = "userId")
-public class UserModel implements Serializable {
+@EqualsAndHashCode(of = "userId", callSuper = false)
+public class UserModel extends RepresentationModel<UserModel> implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

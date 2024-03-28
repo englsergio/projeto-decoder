@@ -8,10 +8,12 @@ import com.lsalmeida.authuser.model.UserModel;
 import com.lsalmeida.authuser.model.dto.UserDto;
 import com.lsalmeida.authuser.repository.UserRepository;
 import com.lsalmeida.authuser.services.UserService;
+import com.lsalmeida.authuser.specification.SpecificationTemplate;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -21,8 +23,8 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper mapper;
 
-    public List<UserModel> findAll() {
-        return userRepository.findAll();
+    public Page<UserModel> findAll(SpecificationTemplate.UserSpec spec, Pageable pageable) {
+        return userRepository.findAll(spec, pageable);
     }
 
     @Override

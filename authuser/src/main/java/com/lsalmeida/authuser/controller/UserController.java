@@ -4,15 +4,22 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.lsalmeida.authuser.model.UserModel;
 import com.lsalmeida.authuser.model.dto.UserDto;
 import com.lsalmeida.authuser.services.UserService;
+import com.lsalmeida.authuser.specification.SpecificationTemplate;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RequiredArgsConstructor
 @RestController
@@ -23,8 +30,14 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public ResponseEntity<List<UserModel>> findAll() {
-        return ResponseEntity.ok(userService.findAll());
+    public ResponseEntity<Page<UserModel>> findAll(
+            SpecificationTemplate.UserSpec spec,
+            @PageableDefault(sort = "userId", direction = Sort.Direction.ASC) Pageable pageable) {
+        Page<UserModel> pagedUser = userService.findAll(spec, pageable);
+        if (!pagedUser.isEmpty()) {
+            pagedUser.toList().forEach(u -> u.add(linkTo(methodOn(UserController.class).findById(u.getUserId())).withSelfRel()));
+        }
+        return ResponseEntity.ok(pagedUser);
     }
 
     @GetMapping("/{id}")
