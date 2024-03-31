@@ -2,10 +2,13 @@ package com.lsalmeida.course.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.lsalmeida.course.enums.CourseLevel;
 import com.lsalmeida.course.enums.CourseStatus;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -46,6 +49,9 @@ public class CourseModel implements Serializable {
     private CourseLevel courseLevel;
     @Column(nullable = false)
     private UUID courseInstructor;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @Fetch(FetchMode.SUBSELECT)
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "course")
+//    @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<ModuleModel> modules;
 }
