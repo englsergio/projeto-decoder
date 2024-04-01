@@ -3,7 +3,6 @@ package com.lsalmeida.course.controller;
 import com.lsalmeida.course.model.LessonModel;
 import com.lsalmeida.course.model.dto.LessonDto;
 import com.lsalmeida.course.service.LessonService;
-import com.lsalmeida.course.service.ModuleService;
 import com.lsalmeida.course.specification.SpecificationTemplate;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @RequiredArgsConstructor

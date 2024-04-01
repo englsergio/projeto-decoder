@@ -9,8 +9,12 @@ import com.lsalmeida.course.repository.CourseRepository;
 import com.lsalmeida.course.repository.LessonRepository;
 import com.lsalmeida.course.repository.ModuleRepository;
 import com.lsalmeida.course.service.CourseService;
+import com.lsalmeida.course.specification.SpecificationTemplate;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -37,6 +41,12 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public List<CourseModel> findAll() {
         return courseRepository.findAll();
+    }
+
+    @Override
+    public Page<CourseModel> findAll(Specification<CourseModel> spec,
+                                     Pageable pageable) {
+        return courseRepository.findAll(spec, pageable);
     }
 
     @Override
