@@ -3,6 +3,7 @@ package com.lsalmeida.authuser.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.lsalmeida.authuser.enums.UserStatus;
 import com.lsalmeida.authuser.enums.UserType;
 import jakarta.persistence.*;
@@ -11,6 +12,7 @@ import org.springframework.hateoas.RepresentationModel;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Set;
 import java.util.UUID;
 
 @Getter
@@ -55,4 +57,7 @@ public class UserModel extends RepresentationModel<UserModel> implements Seriali
     @Column(nullable = false)
     private LocalDateTime lastUpdateDate;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @OneToMany(mappedBy = "user")
+    private Set<UserCourseModel> usersCourses;
 }

@@ -15,5 +15,11 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect # not needed in hibernate 6+
         show_sql: true
 
+logging:
+  level:
+    com:
+      lsalmeida.authuser:
+        config: info
+
 server:
   port: 8087
