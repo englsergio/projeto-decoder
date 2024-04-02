@@ -2,6 +2,8 @@ package com.lsalmeida.authuser.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.lsalmeida.authuser.enums.UserStatus;
+import com.lsalmeida.authuser.enums.UserType;
 import com.lsalmeida.authuser.validation.UsernameConstraint;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -34,6 +36,8 @@ public record UserDto (
         String oldPassword,
         @JsonView({UserView.RegistrationPost.class, UserView.UserPut.class})
         String fullName,
+        UserStatus userStatus,
+        UserType userType,
         @JsonView({UserView.RegistrationPost.class, UserView.UserPut.class})
         String phoneNumber,
         @JsonView({UserView.RegistrationPost.class, UserView.UserPut.class})

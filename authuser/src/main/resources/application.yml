@@ -14,12 +14,25 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect # not needed in hibernate 6+
         show_sql: true
+        format_sql: true
 
 logging:
   level:
+    org:
+      hibernate:
+        sql: debug
+        type:
+          descriptor:
+            sql:
+              BasicBinder: trace # shows preparedStatement parameters
     com:
       lsalmeida.authuser:
         config: info
 
 server:
   port: 8087
+
+api:
+  client:
+    base-url: ${API_COURSE_BASEURL}
+    endpoint: ${API_COURSE_ENDPOINT}

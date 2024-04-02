@@ -13,6 +13,7 @@ public interface UserService {
     Page<UserModel> findAll(Specification<UserModel> spec, Pageable pageable);
     UserModel findById(UUID id);
     UserDto save(UserDto user);
+    UserDto save(UserModel userModel);
     void delete(UserModel user);
     void existsByUsername(String username);
     void existsByEmail(String email);

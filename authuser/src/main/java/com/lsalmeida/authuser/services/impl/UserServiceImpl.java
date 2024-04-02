@@ -41,19 +41,25 @@ public class UserServiceImpl implements UserService {
         return mapper.toDto(savedUser);
     }
 
+    @Override
+    public UserDto save(UserModel userModel) {
+        UserModel savedUser = userRepository.save(userModel);
+        return mapper.toDto(savedUser);
+    }
+
     public void delete(UserModel user) {
         userRepository.delete(user);
     }
 
     @Override
     public void existsByUsername(String username) {
-        if(userRepository.findByUsername(username).isEmpty())
+        if(userRepository.findByUsername(username).isPresent())
             throw new UserAlreadyRegisteredException("Existe um usuário com esse nome já cadastrado.");
     }
 
     @Override
     public void existsByEmail(String email) {
-        if(userRepository.findByEmail(email).isEmpty())
+        if(userRepository.findByEmail(email).isPresent())
             throw new UserAlreadyRegisteredException("Existe um usuário com este email já cadastrado.");
     }
 
