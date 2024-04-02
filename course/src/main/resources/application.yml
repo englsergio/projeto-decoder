@@ -15,5 +15,20 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect # not needed in hibernate 6+
         show_sql: true
 
+logging:
+  level:
+    org:
+      hibernate:
+        sql: debug
+        type:
+          descriptor:
+            sql:
+              BasicBinder: trace # shows preparedStatement parameters
 server:
   port: 8082
+
+api:
+  user:
+    base-url: ${API_USER_BASEURL}
+    endpoint: ${API_USER_ENDPOINT}
+    endpoint-propagate-subscription: ${API_USER_ENDPOINT_PROPAG_SUBS}

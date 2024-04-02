@@ -10,6 +10,7 @@ import java.util.UUID;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record CourseDto(
+        UUID courseId,
         @NotBlank
         String name,
         @NotBlank
