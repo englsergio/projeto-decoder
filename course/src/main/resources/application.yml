@@ -1,7 +1,11 @@
+server:
+  port: 8082
+  servlet:
+    context-path: '/ead-course'
+
 spring:
   application:
     name: course
-
   datasource:
     password: ${PSQL_PASS}
     username: ${PSQL_USER}
@@ -24,11 +28,19 @@ logging:
           descriptor:
             sql:
               BasicBinder: trace # shows preparedStatement parameters
-server:
-  port: 8082
 
 api:
   user:
-    base-url: ${API_USER_BASEURL}
+    base-url: authuser
     endpoint: ${API_USER_ENDPOINT}
     endpoint-propagate-subscription: ${API_USER_ENDPOINT_PROPAG_SUBS}
+    endpoint-propagate-deletion: ${API_USER_ENDPOINT_PROPAG_DEL}
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: ${EUREKA_URL}
+  instance:
+    hostname: ${EUREKA_INSTANCE_HOSTNAME}

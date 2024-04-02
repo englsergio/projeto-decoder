@@ -1,7 +1,11 @@
+server:
+  port: 8087
+  servlet:
+    context-path: '/ead-authuser'
+
 spring:
   application:
     name: authuser
-
   datasource:
     password: ${PSQL_PASS}
     username: ${PSQL_USER}
@@ -29,10 +33,16 @@ logging:
       lsalmeida.authuser:
         config: info
 
-server:
-  port: 8087
-
 api:
   client:
-    base-url: ${API_COURSE_BASEURL}
+    base-url: course
     endpoint: ${API_COURSE_ENDPOINT}
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: ${EUREKA_URL}
+  instance:
+    hostname: ${EUREKA_INSTANCE_HOSTNAME}
