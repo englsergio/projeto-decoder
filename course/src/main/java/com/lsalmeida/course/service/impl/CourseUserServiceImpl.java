@@ -12,6 +12,7 @@ import com.lsalmeida.course.model.dto.SubscriptionDto;
 import com.lsalmeida.course.model.dto.UserDto;
 import com.lsalmeida.course.repository.CourseRepository;
 import com.lsalmeida.course.repository.CourseUserRepository;
+import com.lsalmeida.course.service.CourseService;
 import com.lsalmeida.course.service.CourseUserService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
@@ -28,11 +29,13 @@ public class CourseUserServiceImpl implements CourseUserService {
 
     private final UserClient userClient;
     private final CourseRepository courseRepository;
+    private final CourseService courseService;
     private final CourseUserRepository courseUserRepository;
 
     @Override
-    public Page<UserDto> getAllCoursesByUser(UUID userId, Pageable pageable) {
-        return userClient.getAllUsersByCourse(userId, pageable);
+    public Page<UserDto> getAllCoursesByUser(UUID courseId, Pageable pageable) {
+        if (!courseService.existsById(courseId)) throw new CourseNotFoundException();
+        return userClient.getAllUsersByCourse(courseId, pageable);
     }
 
     @Transactional

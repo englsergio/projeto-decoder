@@ -1,9 +1,9 @@
 package com.lsalmeida.course.validation;
 
-import com.lsalmeida.authuser.model.dto.CourseDto;
 import com.lsalmeida.course.client.UserClient;
 import com.lsalmeida.course.enums.UserType;
 import com.lsalmeida.course.exception.InvalidUserTypeException;
+import com.lsalmeida.course.model.dto.CourseDto;
 import com.lsalmeida.course.model.dto.UserDto;
 import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;

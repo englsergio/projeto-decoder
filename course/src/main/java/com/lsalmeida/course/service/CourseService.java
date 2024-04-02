@@ -11,13 +11,14 @@ import java.util.UUID;
 
 public interface CourseService {
 
-    CourseDto findById(UUID id);
+    CourseDto findById(UUID courseId);
     Page<CourseModel> findAll(Specification<CourseModel> spec,
                               Pageable pageable);
     CourseDto save(CourseDto dto);
-    CourseDto update(UUID id, CourseDto dto);
-    void deleteById(UUID id);
+    CourseDto update(UUID courseId, CourseDto dto);
+    void deleteById(UUID courseId);
     void delete(CourseModel courseModel);
     List<CourseModel> findAll();
 
+    boolean existsById(UUID courseId);
 }

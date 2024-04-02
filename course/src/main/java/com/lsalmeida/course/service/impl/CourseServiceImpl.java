@@ -1,5 +1,6 @@
 package com.lsalmeida.course.service.impl;
 
+import com.lsalmeida.course.client.UserClient;
 import com.lsalmeida.course.exception.CourseNotFoundException;
 import com.lsalmeida.course.mapper.CourseMapper;
 import com.lsalmeida.course.model.CourseModel;
@@ -10,7 +11,6 @@ import com.lsalmeida.course.repository.CourseUserRepository;
 import com.lsalmeida.course.repository.LessonRepository;
 import com.lsalmeida.course.repository.ModuleRepository;
 import com.lsalmeida.course.service.CourseService;
-import com.lsalmeida.course.specification.SpecificationTemplate;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -31,11 +31,12 @@ public class CourseServiceImpl implements CourseService {
     private final ModuleRepository moduleRepository;
     private final LessonRepository lessonRepository;
     private final CourseUserRepository courseUserRepository;
+    private final UserClient userClient;
     private final CourseMapper mapper;
 
     @Override
-    public CourseDto findById(UUID id) {
-        return courseRepository.findById(id)
+    public CourseDto findById(UUID courseId) {
+        return courseRepository.findById(courseId)
                 .map(mapper::toDto)
                 .orElseThrow(CourseNotFoundException::new);
     }
@@ -59,8 +60,8 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public CourseDto update(UUID id, CourseDto dto) {
-        CourseModel course = courseRepository.findById(id)
+    public CourseDto update(UUID courseId, CourseDto dto) {
+        CourseModel course = courseRepository.findById(courseId)
                 .map(c -> mapper.updateCourse(c, dto))
                 .orElseThrow(CourseNotFoundException::new);
         CourseModel updated = courseRepository.save(course);
@@ -68,8 +69,8 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public void deleteById(UUID id) {
-        courseRepository.findById(id).ifPresentOrElse(
+    public void deleteById(UUID courseId) {
+        courseRepository.findById(courseId).ifPresentOrElse(
                 this::delete,
                 () -> {throw new CourseNotFoundException();});
     }
@@ -84,6 +85,12 @@ public class CourseServiceImpl implements CourseService {
         moduleRepository.deleteAllById(collectedModulesIds);
         courseRepository.delete(courseModel);
         courseUserRepository.deleteCourseUserIntoCourse(courseModel.getCourseId());
+        userClient.deleteCourseInUser(courseModel.getCourseId());
+    }
+
+    @Override
+    public boolean existsById(UUID courseId) {
+        return courseRepository.existsById(courseId);
     }
 
 }

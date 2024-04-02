@@ -49,14 +49,14 @@ public class CourseController {
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<CourseDto> update(@PathVariable UUID id, @RequestBody @Valid CourseDto dto) {
-        return ResponseEntity.ok(courseService.update(id, dto));
+    @PutMapping("/{courseId}")
+    public ResponseEntity<CourseDto> update(@PathVariable UUID courseId, @RequestBody @Valid CourseDto dto) {
+        return ResponseEntity.ok(courseService.update(courseId, dto));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id) {
-        courseService.deleteById(id);
+    @DeleteMapping("/{courseId}")
+    public ResponseEntity<Void> delete(@PathVariable UUID courseId) {
+        courseService.deleteById(courseId);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 

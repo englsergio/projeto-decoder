@@ -26,6 +26,8 @@ public class UserClient {
     private String endpoint;
     @Value("${API_USER_ENDPOINT_PROPAG_SUBS}")
     private String endpointPropagSubs;
+    @Value("${API_USER_ENDPOINT_PROPAG_DEL}")
+    private String endpointPropagDel;
     private final RestClient restClient;
 
     public Page<UserDto> getAllUsersByCourse(UUID courseId, Pageable pageable) {
@@ -67,6 +69,18 @@ public class UserClient {
                 .retrieve()
                 .onStatus(new DefaultResponseErrorHandler())
                 .body(UserCourseDto.class);
+    }
+
+    public Void deleteCourseInUser(UUID courseId) {
+        return restClient.delete()
+                .uri(UriComponentsBuilder
+                        .fromHttpUrl(baseurl)
+                        .pathSegment(endpointPropagDel)
+                        .buildAndExpand(courseId)
+                        .toUri())
+                .retrieve()
+                .onStatus(new DefaultResponseErrorHandler())
+                .body(Void.class);
     }
 
 }

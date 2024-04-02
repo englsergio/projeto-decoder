@@ -23,4 +23,9 @@ public class RestExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errorModel);
     }
 
+    @ExceptionHandler(value = CourseNotFoundException.class)
+    public ResponseEntity<ErrorModel> handleCourseNotFoundException(CourseNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorModel(e.getMessage()));
+    }
+
 }

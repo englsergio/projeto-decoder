@@ -2,6 +2,7 @@ package com.lsalmeida.authuser.services.impl;
 
 import com.lsalmeida.authuser.client.CourseClient;
 import com.lsalmeida.authuser.enums.UserStatus;
+import com.lsalmeida.authuser.exception.CourseNotFoundException;
 import com.lsalmeida.authuser.exception.UserAlreadyRegisteredException;
 import com.lsalmeida.authuser.exception.UserBlockedException;
 import com.lsalmeida.authuser.model.UserCourseModel;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -31,6 +33,7 @@ public class UserCourseServiceImpl implements UserCourseService {
         return courseClient.getAllCoursesByUser(userId, pageable);
     }
 
+    @Transactional
     @Override
     public UserCourseModel saveSubscriptionCourseInUser(UUID userId, UserCourseDto userCourseDto) {
         UserModel userModel = userService.findById(userId);
@@ -38,6 +41,13 @@ public class UserCourseServiceImpl implements UserCourseService {
         if (userCourseRepository.existsByUserAndCourseId(userModel, userCourseDto.courseId()))
             throw new UserAlreadyRegisteredException();
         return userCourseRepository.save(new UserCourseModel(null, userModel, userCourseDto.courseId()));
+    }
+
+    @Transactional
+    @Override
+    public void deleteUserCourseByCourse(UUID courseId) {
+        if (!userCourseRepository.existsByCourseId(courseId)) throw new CourseNotFoundException();
+        userCourseRepository.deleteAllByCourseId(courseId);
     }
 
 }
