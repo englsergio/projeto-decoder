@@ -6,6 +6,7 @@ import com.lsalmeida.course.model.CourseModel;
 import com.lsalmeida.course.model.ModuleModel;
 import com.lsalmeida.course.model.dto.CourseDto;
 import com.lsalmeida.course.repository.CourseRepository;
+import com.lsalmeida.course.repository.CourseUserRepository;
 import com.lsalmeida.course.repository.LessonRepository;
 import com.lsalmeida.course.repository.ModuleRepository;
 import com.lsalmeida.course.service.CourseService;
@@ -29,6 +30,7 @@ public class CourseServiceImpl implements CourseService {
     private final CourseRepository courseRepository;
     private final ModuleRepository moduleRepository;
     private final LessonRepository lessonRepository;
+    private final CourseUserRepository courseUserRepository;
     private final CourseMapper mapper;
 
     @Override
@@ -68,7 +70,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public void deleteById(UUID id) {
         courseRepository.findById(id).ifPresentOrElse(
-                courseRepository::delete,
+                this::delete,
                 () -> {throw new CourseNotFoundException();});
     }
 
@@ -81,6 +83,7 @@ public class CourseServiceImpl implements CourseService {
         lessonRepository.deleteAllLessonsIntoModules(collectedModulesIds);
         moduleRepository.deleteAllById(collectedModulesIds);
         courseRepository.delete(courseModel);
+        courseUserRepository.deleteCourseUserIntoCourse(courseModel.getCourseId());
     }
 
 }
