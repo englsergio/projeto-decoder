@@ -6,6 +6,7 @@ import com.lsalmeida.authuser.exception.UserNotFoundException;
 import com.lsalmeida.authuser.mapper.UserMapper;
 import com.lsalmeida.authuser.model.UserModel;
 import com.lsalmeida.authuser.model.dto.UserDto;
+import com.lsalmeida.authuser.repository.UserCourseRepository;
 import com.lsalmeida.authuser.repository.UserRepository;
 import com.lsalmeida.authuser.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final UserCourseRepository userCourseRepository;
     private final UserMapper mapper;
 
     public Page<UserModel> findAll(Specification<UserModel> spec, Pageable pageable) {
@@ -48,6 +50,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public void delete(UserModel user) {
+        userCourseRepository.deleteUserCourseIntoUser(user.getUserId());
         userRepository.delete(user);
     }
 
