@@ -18,10 +18,12 @@ import java.util.UUID;
 @Component
 public class CourseClient {
 
-    @Value("${API_COURSE_BASEURL}")
+    @Value("${api.client.base-url}")
     private String baseurl;
-    @Value("${API_COURSE_ENDPOINT}")
+    @Value("${api.client.endpoint}")
     private String endpoint;
+    @Value("${api.client.endpoint-propag-del}")
+    private String endpointPropagDel;
     private final RestClient restClient;
 
     public Page<CourseDto> getAllCoursesByUser(UUID userId, Pageable pageable) {
@@ -38,6 +40,17 @@ public class CourseClient {
                 .retrieve()
                 .onStatus(new DefaultResponseErrorHandler())
                 .body(new ParameterizedTypeReference<ResponsePageDto<CourseDto>>() {});
+    }
+
+    public void deleteUserInCourse(UUID userId) {
+        restClient.delete()
+                .uri(UriComponentsBuilder
+                        .fromHttpUrl(baseurl)
+                        .pathSegment(endpointPropagDel)
+                        .buildAndExpand(userId)
+                        .toUri())
+                .retrieve()
+                .onStatus(new DefaultResponseErrorHandler());
     }
 
 }

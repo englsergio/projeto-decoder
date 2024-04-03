@@ -39,4 +39,10 @@ public class CourseUserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(courseUserModel);
     }
 
+    @DeleteMapping("/courses/users/{userId}")
+    public ResponseEntity<Void> deleteUserCourseByCourse(@PathVariable UUID userId) {
+        courseUserService.deleteCourseUserByUser(userId);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
 }

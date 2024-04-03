@@ -12,8 +12,12 @@ import java.util.UUID;
 public interface CourseUserRepository extends JpaRepository<CourseUserModel, UUID> {
     boolean existsByCourseAndUserId(CourseModel course, UUID userId);
 
+    boolean existsByUserId(UUID userId);
+
     @Modifying
     @Query(value = "delete from tb_courses_users where course_id = :courseId", nativeQuery = true)
     void deleteCourseUserIntoCourse(@Param("courseId") UUID courseId);
+
+    void deleteCourseUserByUserId(UUID userId);
 
 }

@@ -20,13 +20,13 @@ import java.util.UUID;
 @Component
 public class UserClient {
 
-    @Value("${API_USER_BASEURL}")
+    @Value("${api.user.base-url}")
     private String baseurl;
-    @Value("${API_USER_ENDPOINT}")
+    @Value("${api.user.endpoint}")
     private String endpoint;
-    @Value("${API_USER_ENDPOINT_PROPAG_SUBS}")
+    @Value("${api.user.endpoint-propagate-subscription}")
     private String endpointPropagSubs;
-    @Value("${API_USER_ENDPOINT_PROPAG_DEL}")
+    @Value("${api.user.endpoint-propagate-deletion}")
     private String endpointPropagDel;
     private final RestClient restClient;
 

@@ -5,6 +5,7 @@ import com.lsalmeida.course.enums.UserStatus;
 import com.lsalmeida.course.exception.CourseNotFoundException;
 import com.lsalmeida.course.exception.UserAlreadyInCourseException;
 import com.lsalmeida.course.exception.UserBlockedException;
+import com.lsalmeida.course.exception.UserNotFoundException;
 import com.lsalmeida.course.model.CourseModel;
 import com.lsalmeida.course.model.CourseUserModel;
 import com.lsalmeida.course.model.dto.CourseUserDto;
@@ -51,8 +52,20 @@ public class CourseUserServiceImpl implements CourseUserService {
         return saved;
     }
 
+    @Override
+    public void deleteCourseUserByUser(UUID userId) {
+        if (existsByUserId(userId)) throw new UserNotFoundException();
+        courseUserRepository.deleteCourseUserByUserId(userId);
+    }
+
+    @Override
     public boolean existsByCourseAndUserId(CourseModel courseModel, @NotNull UUID userId) {
         return courseUserRepository.existsByCourseAndUserId(courseModel, userId);
+    }
+
+    @Override
+    public boolean existsByUserId(@NotNull UUID userId) {
+        return courseUserRepository.existsByUserId(userId);
     }
 
 }

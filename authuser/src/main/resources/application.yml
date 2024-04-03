@@ -37,6 +37,7 @@ api:
   client:
     base-url: course
     endpoint: ${API_COURSE_ENDPOINT}
+    endpoint-propag-del: ${API_COURSE_ENDPOINT_PROPAG_DEL}
 
 eureka:
   client:

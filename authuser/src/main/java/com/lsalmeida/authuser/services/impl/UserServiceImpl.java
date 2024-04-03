@@ -1,5 +1,6 @@
 package com.lsalmeida.authuser.services.impl;
 
+import com.lsalmeida.authuser.client.CourseClient;
 import com.lsalmeida.authuser.exception.IncorrectUserPasswordException;
 import com.lsalmeida.authuser.exception.UserAlreadyRegisteredException;
 import com.lsalmeida.authuser.exception.UserNotFoundException;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -23,6 +25,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserCourseRepository userCourseRepository;
+    private final CourseClient courseClient;
     private final UserMapper mapper;
 
     public Page<UserModel> findAll(Specification<UserModel> spec, Pageable pageable) {
@@ -49,9 +52,12 @@ public class UserServiceImpl implements UserService {
         return mapper.toDto(savedUser);
     }
 
+    @Transactional
+    @Override
     public void delete(UserModel user) {
-        userCourseRepository.deleteUserCourseIntoUser(user.getUserId());
         userRepository.delete(user);
+        userCourseRepository.deleteUserCourseIntoUser(user.getUserId());
+        courseClient.deleteUserInCourse(user.getUserId());
     }
 
     @Override
