@@ -1,0 +1,69 @@
+services:
+  api-gateway:
+    build: ./api-gateway/
+    ports:
+      - 8080:8080
+    depends_on:
+      - service-registry
+    environment:
+      - EUREKA_INSTANCE_HOSTNAME=localhost
+      - EUREKA_URL=http://localhost:8761/eureka/
+  authuser:
+    build: ./authuser
+    ports:
+      - 8087:8087
+    depends_on:
+      - service-registry
+      - postgres
+    environment:
+      - EUREKA_INSTANCE_HOSTNAME=localhost
+      - EUREKA_URL=http://localhost:8761/eureka/
+      - API_COURSE_BASEURL=http://localhost:8082
+      - API_COURSE_ENDPOINT=courses
+      - API_COURSE_ENDPOINT_PROPAG_DEL=/courses/users/{userId}
+      - PSQL_PASS=pass
+      - PSQL_USER=postgres
+  course:
+    build: ./course
+    ports:
+      - 8082:8082
+    depends_on:
+      - service-registry
+      - postgres
+    environment:
+      - EUREKA_INSTANCE_HOSTNAME=localhost
+      - EUREKA_URL=http://localhost:8761/eureka/
+      - API_USER_BASEURL=http://localhost:8087
+      - API_USER_ENDPOINT=users
+      - API_USER_ENDPOINT_PROPAG_SUBS=users/{userId}/courses/subscription
+      - PSQL_PASS=pass
+      - PSQL_USER=postgres
+      - API_USER_ENDPOINT_PROPAG_DEL=/users/courses/{courseId}
+  notification:
+    build: ./notification
+    ports:
+      - 8085:8085
+    depends_on:
+      - service-registry
+    environment:
+      - EUREKA_INSTANCE_HOSTNAME=localhost
+      - EUREKA_URL=http://localhost:8761/eureka/
+  service-registry:
+    build: ./service-registry/
+    ports:
+      - 8761:8761
+  postgres:
+    image: postgres:latest
+    environment:
+      - POSTGRES_DB=blog
+      - POSTGRES_PASSWORD=pass
+      - POSTGRES_USER=postgres
+    ports:
+      - 5432:5432
+    volumes:
+      - type: volume
+      - dbdata:/var/lib/postgresql/data
+
+
+volumes:
+  dbdata:
