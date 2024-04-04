@@ -6,7 +6,7 @@ ENV HOME=/usr/app
 RUN mkdir -p $HOME
 WORKDIR $HOME
 ADD . $HOME
-RUN --mount=type=cache,target=/root/.m2 ./mvnw -f $HOME/pom.xml clean package
+RUN --mount=type=cache,target=/root/.m2 ./mvnw -f $HOME/pom.xml clean package -DskipTests
 
 #
 # package stage
@@ -16,5 +16,5 @@ LABEL authors="lsalmeida"
 WORKDIR usr/app
 ARG JAR_FILE=/usr/app/target/*.jar
 COPY --from=build $JAR_FILE /app.jar
-EXPOSE 8080
+EXPOSE 8761
 ENTRYPOINT ["java", "-jar", "/app.jar"]

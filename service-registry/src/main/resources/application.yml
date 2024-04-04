@@ -8,4 +8,3 @@ eureka:
   client:
     register-with-eureka: false
     fetch-registry: false
-    eureka-service-url-poll-interval-seconds: 5

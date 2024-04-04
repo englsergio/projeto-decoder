@@ -6,8 +6,8 @@ services:
     depends_on:
       - service-registry
     environment:
-      - EUREKA_INSTANCE_HOSTNAME=localhost
-      - EUREKA_URL=http://localhost:8761/eureka/
+      - EUREKA_INSTANCE_HOSTNAME=host.docker.internal
+      - EUREKA_URL=http://host.docker.internal:8761/eureka/
   authuser:
     build: ./authuser
     ports:
@@ -16,13 +16,14 @@ services:
       - service-registry
       - postgres
     environment:
-      - EUREKA_INSTANCE_HOSTNAME=localhost
-      - EUREKA_URL=http://localhost:8761/eureka/
-      - API_COURSE_BASEURL=http://localhost:8082
+      - EUREKA_INSTANCE_HOSTNAME=host.docker.internal
+      - EUREKA_URL=http://host.docker.internal:8761/eureka/
+      - API_COURSE_BASEURL=http://host.docker.internal:8082
       - API_COURSE_ENDPOINT=courses
       - API_COURSE_ENDPOINT_PROPAG_DEL=/courses/users/{userId}
       - PSQL_PASS=pass
       - PSQL_USER=postgres
+      - PSQL_HOST=host.docker.internal
   course:
     build: ./course
     ports:
@@ -31,13 +32,14 @@ services:
       - service-registry
       - postgres
     environment:
-      - EUREKA_INSTANCE_HOSTNAME=localhost
-      - EUREKA_URL=http://localhost:8761/eureka/
-      - API_USER_BASEURL=http://localhost:8087
+      - EUREKA_INSTANCE_HOSTNAME=host.docker.internal
+      - EUREKA_URL=http://host.docker.internal:8761/eureka/
+      - API_USER_BASEURL=http://host.docker.internal:8087
       - API_USER_ENDPOINT=users
       - API_USER_ENDPOINT_PROPAG_SUBS=users/{userId}/courses/subscription
       - PSQL_PASS=pass
       - PSQL_USER=postgres
+      - PSQL_HOST=host.docker.internal
       - API_USER_ENDPOINT_PROPAG_DEL=/users/courses/{courseId}
   notification:
     build: ./notification
@@ -46,8 +48,8 @@ services:
     depends_on:
       - service-registry
     environment:
-      - EUREKA_INSTANCE_HOSTNAME=localhost
-      - EUREKA_URL=http://localhost:8761/eureka/
+      - EUREKA_INSTANCE_HOSTNAME=host.docker.internal
+      - EUREKA_URL=http://host.docker.internal:8761/eureka/
   service-registry:
     build: ./service-registry/
     ports:
@@ -61,9 +63,10 @@ services:
     ports:
       - 5432:5432
     volumes:
-      - type: volume
+#      - type: volume
       - dbdata:/var/lib/postgresql/data
 
 
 volumes:
   dbdata:
+    driver: local
