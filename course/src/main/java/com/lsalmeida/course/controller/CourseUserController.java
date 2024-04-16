@@ -1,9 +1,9 @@
 package com.lsalmeida.course.controller;
 
-import com.lsalmeida.course.model.CourseUserModel;
+import com.lsalmeida.course.model.UserModel;
 import com.lsalmeida.course.model.dto.SubscriptionDto;
-import com.lsalmeida.course.model.dto.UserDto;
-import com.lsalmeida.course.service.CourseUserService;
+import com.lsalmeida.course.service.UserService;
+import com.lsalmeida.course.specification.SpecificationTemplate;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,27 +22,22 @@ import java.util.UUID;
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class CourseUserController {
 
-    private final CourseUserService courseUserService;
+    private final UserService userService;
 
     @GetMapping("/courses/{courseId}/users")
-    public ResponseEntity<Page<UserDto>> findAll(
+    public ResponseEntity<Page<UserModel>> findAll(
+            SpecificationTemplate.UserSpec spec,
             @PageableDefault(sort = "userId", direction = Sort.Direction.ASC) Pageable pageable,
             @PathVariable(required = false) UUID courseId) {
-        return ResponseEntity.ok(courseUserService.getAllCoursesByUser(courseId, pageable));
+        return ResponseEntity.ok(userService.findAll(courseId, spec, pageable));
     }
 
     @PostMapping("/courses/{courseId}/users/subscription")
-    public ResponseEntity<CourseUserModel> saveSubscriptionUserInCourse(
+    public ResponseEntity<UserModel> saveSubscriptionUserInCourse(
             @Valid @RequestBody SubscriptionDto subscriptionDto,
             @PathVariable(required = false) UUID courseId) {
-        CourseUserModel courseUserModel = courseUserService.saveSubscriptionUserInCourse(courseId, subscriptionDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(courseUserModel);
-    }
-
-    @DeleteMapping("/courses/users/{userId}")
-    public ResponseEntity<Void> deleteUserCourseByCourse(@PathVariable UUID userId) {
-        courseUserService.deleteCourseUserByUser(userId);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        UserModel userModel = userService.saveSubscriptionUserInCourse(courseId, subscriptionDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(userModel);
     }
 
 }

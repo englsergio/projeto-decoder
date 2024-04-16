@@ -1,13 +1,11 @@
 package com.lsalmeida.course.service.impl;
 
-import com.lsalmeida.course.client.UserClient;
 import com.lsalmeida.course.exception.CourseNotFoundException;
 import com.lsalmeida.course.mapper.CourseMapper;
 import com.lsalmeida.course.model.CourseModel;
 import com.lsalmeida.course.model.ModuleModel;
 import com.lsalmeida.course.model.dto.CourseDto;
 import com.lsalmeida.course.repository.CourseRepository;
-import com.lsalmeida.course.repository.CourseUserRepository;
 import com.lsalmeida.course.repository.LessonRepository;
 import com.lsalmeida.course.repository.ModuleRepository;
 import com.lsalmeida.course.service.CourseService;
@@ -30,8 +28,6 @@ public class CourseServiceImpl implements CourseService {
     private final CourseRepository courseRepository;
     private final ModuleRepository moduleRepository;
     private final LessonRepository lessonRepository;
-    private final CourseUserRepository courseUserRepository;
-    private final UserClient userClient;
     private final CourseMapper mapper;
 
     @Override
@@ -84,8 +80,6 @@ public class CourseServiceImpl implements CourseService {
         lessonRepository.deleteAllLessonsIntoModules(collectedModulesIds);
         moduleRepository.deleteAllById(collectedModulesIds);
         courseRepository.delete(courseModel);
-        courseUserRepository.deleteCourseUserIntoCourse(courseModel.getCourseId());
-        userClient.deleteCourseInUser(courseModel.getCourseId());
     }
 
     @Override
