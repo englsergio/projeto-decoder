@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: config-server
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/englsergio/decoder-server-config-repo
+          default-label: main
+server:
+  port: 8888
+eureka:
+  client:
+    register-with-eureka: true
+    service-url:
+      defaultZone: ${EUREKA_URL}
+  instance:
+    hostname: ${EUREKA_INSTANCE_HOSTNAME}
