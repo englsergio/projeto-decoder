@@ -1,6 +1,7 @@
 package com.lsalmeida.authuser.services.impl;
 
 import com.lsalmeida.authuser.enums.UserType;
+import com.lsalmeida.authuser.mapper.UserMapper;
 import com.lsalmeida.authuser.model.UserModel;
 import com.lsalmeida.authuser.model.dto.UserDto;
 import com.lsalmeida.authuser.services.InstructorService;
@@ -17,12 +18,14 @@ import java.util.UUID;
 public class InstructorServiceImpl implements InstructorService {
 
     private final UserService userService;
+    private final UserMapper userMapper;
 
     @Override
     public UserDto turnIntoInstructor(UUID userId) {
         UserModel userModel = userService.findById(userId);
         userModel.setUserType(UserType.INSTRUCTOR);
         userModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
-        return userService.save(userModel);
+        return userMapper.toDto(userService.updateUser(userModel));
     }
+
 }

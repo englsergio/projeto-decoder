@@ -35,7 +35,8 @@ public class UserEventConsumer {
     public void listenUserEvent(@Payload UserEventDto dto) {
         UserModel userModel = userMapper.fromUserEventDto(dto);
         switch (ActionType.valueOf(dto.getActionType())) {
-            case CREATE -> userService.save(userModel);
+            case CREATE, UPDATE -> userService.save(userModel);
+            case DELETE -> userService.delete(userModel.getUserId());
         }
     }
 }

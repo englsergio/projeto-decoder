@@ -36,8 +36,8 @@ public class CourseUserController {
     public ResponseEntity<UserModel> saveSubscriptionUserInCourse(
             @Valid @RequestBody SubscriptionDto subscriptionDto,
             @PathVariable(required = false) UUID courseId) {
-        UserModel userModel = userService.saveSubscriptionUserInCourse(courseId, subscriptionDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(userModel);
+        userService.saveSubscriptionUserInCourse(courseId, subscriptionDto);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
 }

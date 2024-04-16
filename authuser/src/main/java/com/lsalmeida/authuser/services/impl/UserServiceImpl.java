@@ -59,13 +59,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void existsByUsername(String username) {
-        if(userRepository.findByUsername(username).isPresent())
+        if (userRepository.findByUsername(username).isPresent())
             throw new UserAlreadyRegisteredException("Existe um usuário com esse nome já cadastrado.");
     }
 
     @Override
     public void existsByEmail(String email) {
-        if(userRepository.findByEmail(email).isPresent())
+        if (userRepository.findByEmail(email).isPresent())
             throw new UserAlreadyRegisteredException("Existe um usuário com este email já cadastrado.");
     }
 
@@ -76,21 +76,6 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
         UserModel saved = userRepository.save(user);
         return mapper.toDto(saved);
-    }
-
-    @Override
-    public void updatePassword(UUID id, UserDto dto) {
-        UserModel user = userRepository.findById(id)
-                .map(u -> checksPassword(u, dto))
-                .map(u -> mapper.updatePassword(u, dto))
-                .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado."));
-        userRepository.save(user);
-    }
-
-    private UserModel checksPassword(UserModel user, UserDto dto) {
-        if (!user.getPassword().equals(dto.oldPassword()))
-            throw new IncorrectUserPasswordException("Senha incorreta!");
-        return user;
     }
 
     @Override
@@ -109,6 +94,36 @@ public class UserServiceImpl implements UserService {
         UserModel savedUser = userRepository.save(userModel);
         userEventPublisher.publishUserEvent(mapper.toUserEventDto(savedUser), ActionType.CREATE);
         return mapper.toDto(savedUser);
+    }
+
+    @Transactional
+    @Override
+    public void deleteUser(UserModel userModel) {
+        delete(userModel);
+        userEventPublisher.publishUserEvent(mapper.toUserEventDto(userModel), ActionType.DELETE);
+    }
+
+    @Transactional
+    @Override
+    public UserModel updateUser(UserModel userModel) {
+        userModel = userRepository.save(userModel);
+        userEventPublisher.publishUserEvent(mapper.toUserEventDto(userModel),ActionType.UPDATE);
+        return userModel;
+    }
+
+    @Override
+    public void updatePassword(UUID id, UserDto dto) {
+        UserModel user = userRepository.findById(id)
+                .map(u -> checksPassword(u, dto))
+                .map(u -> mapper.updatePassword(u, dto))
+                .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado."));
+        userRepository.save(user);
+    }
+
+    private UserModel checksPassword(UserModel user, UserDto dto) {
+        if (!user.getPassword().equals(dto.oldPassword()))
+            throw new IncorrectUserPasswordException("Senha incorreta!");
+        return user;
     }
 
 }
