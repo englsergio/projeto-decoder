@@ -1,13 +1,13 @@
 package com.lsalmeida.authuser.services.impl;
 
-import com.lsalmeida.authuser.client.CourseClient;
+import com.lsalmeida.authuser.enums.ActionType;
 import com.lsalmeida.authuser.exception.IncorrectUserPasswordException;
 import com.lsalmeida.authuser.exception.UserAlreadyRegisteredException;
 import com.lsalmeida.authuser.exception.UserNotFoundException;
 import com.lsalmeida.authuser.mapper.UserMapper;
 import com.lsalmeida.authuser.model.UserModel;
 import com.lsalmeida.authuser.model.dto.UserDto;
-import com.lsalmeida.authuser.repository.UserCourseRepository;
+import com.lsalmeida.authuser.publisher.UserEventPublisher;
 import com.lsalmeida.authuser.repository.UserRepository;
 import com.lsalmeida.authuser.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -24,9 +24,8 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final UserCourseRepository userCourseRepository;
-    private final CourseClient courseClient;
     private final UserMapper mapper;
+    private final UserEventPublisher userEventPublisher;
 
     public Page<UserModel> findAll(Specification<UserModel> spec, Pageable pageable) {
         return userRepository.findAll(spec, pageable);
@@ -56,8 +55,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(UserModel user) {
         userRepository.delete(user);
-        userCourseRepository.deleteUserCourseIntoUser(user.getUserId());
-        courseClient.deleteUserInCourse(user.getUserId());
     }
 
     @Override
@@ -103,6 +100,15 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado."));
         UserModel updated = userRepository.save(user);
         return mapper.toDto(updated);
+    }
+
+    @Transactional
+    @Override
+    public UserDto saveUserAndPublish(UserDto dto) {
+        UserModel userModel = mapper.fromDto(dto);
+        UserModel savedUser = userRepository.save(userModel);
+        userEventPublisher.publishUserEvent(mapper.toUserEventDto(savedUser), ActionType.CREATE);
+        return mapper.toDto(savedUser);
     }
 
 }

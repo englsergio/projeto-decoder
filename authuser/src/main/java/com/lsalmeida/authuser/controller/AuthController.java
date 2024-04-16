@@ -24,7 +24,7 @@ public class AuthController {
             @RequestBody @Valid @JsonView(UserDto.UserView.RegistrationPost.class) UserDto dto) {
         userService.existsByUsername(dto.username());
         userService.existsByEmail(dto.email());
-        UserDto responseDto = userService.save(dto);
+        UserDto responseDto = userService.saveUserAndPublish(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 }

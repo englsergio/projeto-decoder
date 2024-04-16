@@ -20,4 +20,6 @@ public interface UserService {
     UserDto updateUser(UUID id, UserDto dto);
     void updatePassword(UUID id, UserDto dto);
     UserDto updateImage(UUID id, UserDto dto);
+
+    UserDto saveUserAndPublish(UserDto dto);
 }

@@ -18,6 +18,8 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect # not needed in hibernate 6+
         show_sql: true
+  rabbitmq:
+    port: 5672
 
 logging:
   level:
@@ -35,6 +37,12 @@ api:
     endpoint: ${API_USER_ENDPOINT}
     endpoint-propagate-subscription: ${API_USER_ENDPOINT_PROPAG_SUBS}
     endpoint-propagate-deletion: ${API_USER_ENDPOINT_PROPAG_DEL}
+  broker:
+    exchange:
+      userEvent: ead.userevent # exchange name
+    queue:
+      userEventQueue:
+        name: ead.userevent.ms.course
 
 eureka:
   client:

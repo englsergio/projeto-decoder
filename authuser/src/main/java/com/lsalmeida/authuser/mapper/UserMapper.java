@@ -4,6 +4,7 @@ import com.lsalmeida.authuser.enums.UserStatus;
 import com.lsalmeida.authuser.enums.UserType;
 import com.lsalmeida.authuser.model.UserModel;
 import com.lsalmeida.authuser.model.dto.UserDto;
+import com.lsalmeida.authuser.model.dto.UserEventDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.NullValuePropertyMappingStrategy;
@@ -17,6 +18,10 @@ import java.time.ZoneId;
 public interface UserMapper {
 
     UserDto toDto(UserModel userModel);
+
+    @Mapping(target = "userStatus", expression = "java(UserStatus.ACTIVE.name())")
+    @Mapping(target = "userType", expression = "java(UserType.STUDENT.name())")
+    UserEventDto toUserEventDto(UserModel userModel);
 
     @Mapping(target = "userStatus", expression = "java(UserStatus.ACTIVE)")
     @Mapping(target = "userType", expression = "java(UserType.STUDENT)")
