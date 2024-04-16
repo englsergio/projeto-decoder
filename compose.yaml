@@ -54,6 +54,13 @@ services:
     build: ./service-registry/
     ports:
       - 8761:8761
+  config-server:
+    build: ./config-server/
+    ports:
+      - 8888:8888
+    environment:
+      - EUREKA_INSTANCE_HOSTNAME=host.docker.internal
+      - EUREKA_URL=http://host.docker.internal:8761/eureka/
   postgres:
     image: postgres:latest
     environment:
