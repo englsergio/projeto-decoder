@@ -52,3 +52,10 @@ eureka:
       defaultZone: ${EUREKA_URL}
   instance:
     hostname: ${EUREKA_INSTANCE_HOSTNAME}
+
+resilience4j:
+  retry:
+    instances:
+      retryInstance:
+        maxAttempts: 3
+        waitDuration: 5s

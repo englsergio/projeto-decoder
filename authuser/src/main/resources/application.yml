@@ -37,7 +37,6 @@ api:
   client:
     base-url: course
     endpoint: ${API_COURSE_ENDPOINT}
-    endpoint-propag-del: ${API_COURSE_ENDPOINT_PROPAG_DEL}
   broker:
     exchange:
       userEvent: ead.userevent # exchange name
@@ -50,3 +49,19 @@ eureka:
       defaultZone: ${EUREKA_URL}
   instance:
     hostname: ${EUREKA_INSTANCE_HOSTNAME}
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      circuitbreakerInstance:
+        sliding-window-size: 30
+        permitted-number-of-calls-in-half-open-state: 2
+        sliding-window-type: time_based
+        minimum-number-of-calls: 2
+        wait-duration-in-open-state: 30s
+        failure-rate-threshold: 80
+  retry:
+    instances:
+      retryInstance:
+        maxAttempts: 3
+        waitDuration: 5s
