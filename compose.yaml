@@ -65,8 +65,16 @@ services:
     volumes:
 #      - type: volume
       - dbdata:/var/lib/postgresql/data
-
+  rabbitmq:
+    image: rabbitmq:3.13.1-management-alpine
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
 
 volumes:
   dbdata:
+    driver: local
+  rabbitmq_data:
     driver: local
