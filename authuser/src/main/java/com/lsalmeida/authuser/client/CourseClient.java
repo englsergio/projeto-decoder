@@ -42,15 +42,4 @@ public class CourseClient {
                 .body(new ParameterizedTypeReference<ResponsePageDto<CourseDto>>() {});
     }
 
-    public void deleteUserInCourse(UUID userId) {
-        restClient.delete()
-                .uri(UriComponentsBuilder
-                        .fromHttpUrl(baseurl)
-                        .pathSegment(endpointPropagDel)
-                        .buildAndExpand(userId)
-                        .toUri())
-                .retrieve()
-                .onStatus(new DefaultResponseErrorHandler());
-    }
-
 }
