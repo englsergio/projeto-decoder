@@ -6,6 +6,14 @@ server:
 spring:
   application:
     name: course
+  config:
+    # we don't need to specify an ip/port for the configserver
+    # because spring is looking in its default localhost:8888
+    import: 'optional:configserver:'
+  cloud:
+    config:
+      discovery:
+        service-id: config-server
   datasource:
     password: ${PSQL_PASS}
     username: ${PSQL_USER}
@@ -20,6 +28,14 @@ spring:
         show_sql: true
   rabbitmq:
     port: 5672
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - refresh
+          - health
 
 logging:
   level:
