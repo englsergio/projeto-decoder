@@ -2,9 +2,18 @@ spring:
   application:
     name: service-registry
 
+app:
+  service-registry:
+    username: ${APP_SERVICE_REGISTRY_USERNAME}
+    password: ${APP_SERVICE_REGISTRY_PASSWORD}
+
 server:
   port: 8761
 eureka:
+  server:
+    peer-node-read-timeout-ms: 1000
   client:
     register-with-eureka: false
     fetch-registry: false
+    service-url:
+      defaultZone: ${EUREKA_URL}
