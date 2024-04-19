@@ -16,5 +16,5 @@ LABEL authors="lsalmeida"
 WORKDIR usr/app
 ARG JAR_FILE=/usr/app/target/*.jar
 COPY --from=build $JAR_FILE /app.jar
-EXPOSE 8085
-ENTRYPOINT ["java", "-jar", "/app.jar"]
+EXPOSE 8084
+ENTRYPOINT ["java", "-Duser.timezone=America/Sao_Paulo", "-jar", "/app.jar"]

@@ -6,7 +6,9 @@ import com.lsalmeida.course.exception.UserAlreadyInCourseException;
 import com.lsalmeida.course.exception.UserBlockedException;
 import com.lsalmeida.course.model.CourseModel;
 import com.lsalmeida.course.model.UserModel;
+import com.lsalmeida.course.model.dto.NotificationCommand;
 import com.lsalmeida.course.model.dto.SubscriptionDto;
+import com.lsalmeida.course.publisher.NotificationPublisher;
 import com.lsalmeida.course.repository.CourseRepository;
 import com.lsalmeida.course.repository.UserRepository;
 import com.lsalmeida.course.service.CourseService;
@@ -15,6 +17,7 @@ import com.lsalmeida.course.specification.SpecificationTemplate;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -22,6 +25,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 import java.util.UUID;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class UserServiceImpl implements UserService {
@@ -29,6 +33,7 @@ public class UserServiceImpl implements UserService {
     private final CourseRepository courseRepository;
     private final CourseService courseService;
     private final UserRepository userRepository;
+    private final NotificationPublisher notificationPublisher;
 
     @Override
     public Page<UserModel> findAll(UUID courseId, SpecificationTemplate.UserSpec spec, Pageable pageable) {
@@ -38,7 +43,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void saveSubscriptionUserInCourse(UUID courseId, SubscriptionDto subscriptionDto) {
+    public void saveSubscriptionUserInCourseAndPublishNotification(UUID courseId, SubscriptionDto subscriptionDto) {
         CourseModel courseModel = courseRepository.findById(courseId)
                 .orElseThrow(CourseNotFoundException::new);
         UserModel userModel = userRepository.findById(subscriptionDto.userId())
@@ -47,6 +52,16 @@ public class UserServiceImpl implements UserService {
         if (userModel.getUserStatus().equals(UserStatus.BLOCKED.name()))
             throw new UserBlockedException();
         userRepository.saveCourseUser(courseId, userModel.getUserId());
+        try {
+            NotificationCommand command = new NotificationCommand(
+                    "Bem-Vindo(a) ao Curso " + courseModel.getName(),
+                    userModel.getFullName(),
+                    userModel.getUserId()
+            );
+            notificationPublisher.publishNotificationCommand(command);
+        } catch (Exception e) {
+            log.warn("Error sending notification.");
+        }
     }
 
     @Override
