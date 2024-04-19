@@ -15,6 +15,10 @@ spring:
           uri: lb://course
           predicates:
             - Path=/ead-course/**
+        - id: notification
+          uri: lb://notification
+          predicates:
+            - Path=/ead-notification/**
 eureka:
   client:
     fetch-registry: true
