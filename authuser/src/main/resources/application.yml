@@ -10,11 +10,13 @@ spring:
     # we don't need to specify an ip/port for the configserver
     # because spring is looking in its default localhost:8888
 #    import: 'optional:configserver:'
-    import: 'optional:configserver:http://host.docker.internal:8888'
+    import: 'optional:configserver:'
   cloud:
     config:
       discovery:
         service-id: config-server
+      username: ${APP_CONFIG_SERVER_USERNAME}
+      password: ${APP_CONFIG_SERVER_PASSWORD}
   datasource:
     password: ${PSQL_PASS}
     username: ${PSQL_USER}
@@ -33,7 +35,7 @@ spring:
     # valores abaixo são padrão. Podem ser omitidos.
     username: guest
     password: guest
-    host: host.docker.internal
+    host: ${HOST_DOCKER}
 
 management:
   endpoints:
@@ -88,3 +90,8 @@ resilience4j:
       retryInstance:
         maxAttempts: 3
         waitDuration: 5s
+
+app:
+  config-server:
+    username: ${APP_CONFIG_SERVER_USERNAME}
+    password: ${APP_CONFIG_SERVER_PASSWORD}

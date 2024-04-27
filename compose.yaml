@@ -1,3 +1,10 @@
+x-global-env: &env
+  EUREKA_INSTANCE_HOSTNAME: host.docker.internal
+#  EUREKA_URL=http://host.docker.internal:8761/eureka/
+  EUREKA_URL: http://serviceregistry:ead123@host.docker.internal:8761/eureka/
+x-global-env-config-server: &env-config-server
+  APP_CONFIG_SERVER_USERNAME: configserver
+  APP_CONFIG_SERVER_PASSWORD: ead123
 services:
   api-gateway:
     build: ./api-gateway/
@@ -7,8 +14,8 @@ services:
       - service-registry
       - config-server
     environment:
-      - EUREKA_INSTANCE_HOSTNAME=host.docker.internal
-      - EUREKA_URL=http://serviceregistry:ead123@host.docker.internal:8761/eureka/
+      <<: *env
+      <<: *env-config-server
   authuser:
     build: ./authuser
     ports:
@@ -18,14 +25,15 @@ services:
       - config-server
       - postgres
     environment:
-      - EUREKA_INSTANCE_HOSTNAME=host.docker.internal
-      - EUREKA_URL=http://serviceregistry:ead123@host.docker.internal:8761/eureka/
-      - API_COURSE_BASEURL=http://host.docker.internal:8082
-      - API_COURSE_ENDPOINT=courses
-      - API_COURSE_ENDPOINT_PROPAG_DEL=/courses/users/{userId}
-      - PSQL_PASS=pass
-      - PSQL_USER=postgres
-      - PSQL_HOST=host.docker.internal
+      <<: *env
+      <<: *env-config-server
+      HOST_DOCKER: host.docker.internal
+      API_COURSE_BASEURL: http://host.docker.internal:8082
+      API_COURSE_ENDPOINT: courses
+      API_COURSE_ENDPOINT_PROPAG_DEL: /courses/users/{userId}
+      PSQL_PASS: pass
+      PSQL_USER: postgres
+      PSQL_HOST: host.docker.internal
   course:
     build: ./course
     ports:
@@ -35,16 +43,16 @@ services:
       - config-server
       - postgres
     environment:
-      - EUREKA_INSTANCE_HOSTNAME=host.docker.internal
-#      - EUREKA_URL=http://host.docker.internal:8761/eureka/
-      - EUREKA_URL=http://serviceregistry:ead123@host.docker.internal:8761/eureka/
-      - API_USER_BASEURL=http://host.docker.internal:8087
-      - API_USER_ENDPOINT=users
-      - API_USER_ENDPOINT_PROPAG_SUBS=users/{userId}/courses/subscription
-      - PSQL_PASS=pass
-      - PSQL_USER=postgres
-      - PSQL_HOST=host.docker.internal
-      - API_USER_ENDPOINT_PROPAG_DEL=/users/courses/{courseId}
+      <<: *env
+      <<: *env-config-server
+      HOST_DOCKER: host.docker.internal
+      API_USER_BASEURL: http://host.docker.internal:8087
+      API_USER_ENDPOINT: users
+      API_USER_ENDPOINT_PROPAG_SUBS: users/{userId}/courses/subscription
+      PSQL_PASS: pass
+      PSQL_USER: postgres
+      PSQL_HOST: host.docker.internal
+      API_USER_ENDPOINT_PROPAG_DEL: /users/courses/{courseId}
   notification:
     build: ./notification
     ports:
@@ -54,19 +62,20 @@ services:
       - config-server
       - postgres
     environment:
-      - EUREKA_INSTANCE_HOSTNAME=host.docker.internal
-      - EUREKA_URL=http://serviceregistry:ead123@host.docker.internal:8761/eureka/
-      - PSQL_PASS=pass
-      - PSQL_USER=postgres
-      - PSQL_HOST=host.docker.internal
+      <<: *env
+      <<: *env-config-server
+      HOST_DOCKER: host.docker.internal
+      PSQL_PASS: pass
+      PSQL_USER: postgres
+      PSQL_HOST: host.docker.internal
   service-registry:
     build: ./service-registry/
     ports:
       - 8761:8761
     environment:
-      - APP_SERVICE_REGISTRY_USERNAME=serviceregistry
-      - APP_SERVICE_REGISTRY_PASSWORD=ead123
-      - EUREKA_URL=http://serviceregistry:ead123@host.docker.internal:8761/eureka/
+      <<: *env
+      APP_SERVICE_REGISTRY_USERNAME: serviceregistry
+      APP_SERVICE_REGISTRY_PASSWORD: ead123
   config-server:
     build: ./config-server/
     ports:
@@ -74,10 +83,8 @@ services:
     depends_on:
       - service-registry
     environment:
-      - APP_SERVICE_REGISTRY_USERNAME=serviceregistry
-      - APP_SERVICE_REGISTRY_PASSWORD=ead123
-      - EUREKA_INSTANCE_HOSTNAME=host.docker.internal
-      - EUREKA_URL=http://serviceregistry:ead123@host.docker.internal:8761/eureka/
+      <<: *env
+      <<: *env-config-server
   postgres:
     image: postgres:latest
     environment:

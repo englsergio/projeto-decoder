@@ -7,6 +7,14 @@ spring:
         git:
           uri: https://github.com/englsergio/decoder-server-config-repo
           default-label: main
+app:
+  config-server:
+    username: ${APP_CONFIG_SERVER_USERNAME}
+    password: ${APP_CONFIG_SERVER_PASSWORD}
+  service-registry:
+    username: ${APP_SERVICE_REGISTRY_USERNAME}
+    password: ${APP_SERVICE_REGISTRY_PASSWORD}
+
 server:
   port: 8888
 eureka:

@@ -14,6 +14,8 @@ spring:
     config:
       discovery:
         service-id: config-server
+      username: ${APP_CONFIG_SERVER_USERNAME}
+      password: ${APP_CONFIG_SERVER_PASSWORD}
 
   datasource:
     password: ${PSQL_PASS}
@@ -30,7 +32,7 @@ spring:
         format_sql: true
   rabbitmq:
     port: 5672
-    host: host.docker.internal
+    host: ${HOST_DOCKER}
 
 management:
   endpoints:
