@@ -1,5 +1,6 @@
 package com.lsalmeida.authuser.services;
 
+import com.lsalmeida.authuser.model.RoleModel;
 import com.lsalmeida.authuser.model.UserModel;
 import com.lsalmeida.authuser.model.dto.UserDto;
 import org.springframework.data.domain.Page;
@@ -19,7 +20,7 @@ public interface UserService {
     UserDto updateUser(UUID id, UserDto dto);
     void updatePassword(UUID id, UserDto dto);
     UserDto updateImage(UUID id, UserDto dto);
-    UserDto saveUserAndPublish(UserDto dto);
+    UserDto saveUserAndPublish(UserDto dto, RoleModel roleModel);
     void deleteUser(UserModel userModel);
     UserModel updateUser(UserModel userModel);
 }

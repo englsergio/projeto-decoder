@@ -1,7 +1,10 @@
 package com.lsalmeida.authuser.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.lsalmeida.authuser.enums.RoleType;
+import com.lsalmeida.authuser.model.RoleModel;
 import com.lsalmeida.authuser.model.dto.UserDto;
+import com.lsalmeida.authuser.services.RoleService;
 import com.lsalmeida.authuser.services.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final UserService userService;
+    private final RoleService roleService;
 
     @Validated(UserDto.UserView.RegistrationPost.class)
     @PostMapping("/signup")
@@ -24,7 +28,8 @@ public class AuthController {
             @RequestBody @Valid @JsonView(UserDto.UserView.RegistrationPost.class) UserDto dto) {
         userService.existsByUsername(dto.username());
         userService.existsByEmail(dto.email());
-        UserDto responseDto = userService.saveUserAndPublish(dto);
+        RoleModel roleModel = roleService.findByRoleName(RoleType.ROLE_STUDENT);
+        UserDto responseDto = userService.saveUserAndPublish(dto, roleModel);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 }

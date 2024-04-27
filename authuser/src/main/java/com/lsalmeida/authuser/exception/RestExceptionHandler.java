@@ -16,6 +16,13 @@ public class RestExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorModel);
     }
 
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(value = RoleNotFoundException.class)
+    public ResponseEntity<ErrorModel> handleRoleNotFoundException(RoleNotFoundException e) {
+        ErrorModel errorModel = new ErrorModel(e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorModel);
+    }
+
     @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler(value = UserAlreadyRegisteredException.class)
     public ResponseEntity<ErrorModel> handleUserAlreadyRegisteredException(UserAlreadyRegisteredException e) {

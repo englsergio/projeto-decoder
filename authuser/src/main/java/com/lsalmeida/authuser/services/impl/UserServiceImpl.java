@@ -5,6 +5,7 @@ import com.lsalmeida.authuser.exception.IncorrectUserPasswordException;
 import com.lsalmeida.authuser.exception.UserAlreadyRegisteredException;
 import com.lsalmeida.authuser.exception.UserNotFoundException;
 import com.lsalmeida.authuser.mapper.UserMapper;
+import com.lsalmeida.authuser.model.RoleModel;
 import com.lsalmeida.authuser.model.UserModel;
 import com.lsalmeida.authuser.model.dto.UserDto;
 import com.lsalmeida.authuser.publisher.UserEventPublisher;
@@ -14,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +28,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper mapper;
     private final UserEventPublisher userEventPublisher;
+    private final PasswordEncoder passwordEncoder;
 
     public Page<UserModel> findAll(Specification<UserModel> spec, Pageable pageable) {
         return userRepository.findAll(spec, pageable);
@@ -89,8 +92,10 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public UserDto saveUserAndPublish(UserDto dto) {
+    public UserDto saveUserAndPublish(UserDto dto, RoleModel roleModel) {
         UserModel userModel = mapper.fromDto(dto);
+        userModel.setPassword(passwordEncoder.encode(dto.password()));
+        userModel.getRoles().add(roleModel);
         UserModel savedUser = userRepository.save(userModel);
         userEventPublisher.publishUserEvent(mapper.toUserEventDto(savedUser), ActionType.CREATE);
         return mapper.toDto(savedUser);

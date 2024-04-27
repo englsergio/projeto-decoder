@@ -17,6 +17,7 @@ import java.time.ZoneId;
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface UserMapper {
 
+    @Mapping(target = "password", ignore = true)
     UserDto toDto(UserModel userModel);
 
     @Mapping(target = "userStatus", expression = "java(UserStatus.ACTIVE.name())")
@@ -27,6 +28,7 @@ public interface UserMapper {
     @Mapping(target = "userType", expression = "java(UserType.STUDENT)")
     @Mapping(target = "creationDate", expression = "java(LocalDateTime.now(ZoneId.of(\"UTC\")))")
     @Mapping(target = "lastUpdateDate", expression = "java(LocalDateTime.now(ZoneId.of(\"UTC\")))")
+    @Mapping(target = "password", ignore = true)
     UserModel fromDto(UserDto userDto);
 
     default LocalDateTime localDataTimeNow() {
